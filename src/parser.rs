@@ -29,7 +29,7 @@ impl<'a> Parser<'a> {
         self.whitespace();
 
         self.chars.clone().next().map(|(pos, ch)| match (pos, ch) {
-            (start, '0'...'9') => {
+            (start, '0'..='9') => {
                 let end = self.advance_while(|ch| ch.is_digit(10));
                 let p = self.peek();
                 if p == Some('.') || p == Some('E') || p == Some('e') {
@@ -46,7 +46,7 @@ impl<'a> Parser<'a> {
             (start, ch @ '+') | (start, ch @ '-') => {
                 self.chars.next();
                 match self.peek() {
-                    Some('0'...'9') => {
+                    Some('0'..='9') => {
                         let start = if ch == '+' { start + 1 } else { start };
                         let end = self.advance_while(|ch| ch.is_digit(10));
                         if self.peek() == Some('.') {
@@ -69,7 +69,7 @@ impl<'a> Parser<'a> {
             }
             (start, '.') => {
                 self.chars.next();
-                if let Some('0'...'9') = self.peek() {
+                if let Some('0'..='9') = self.peek() {
                     let end = self.advance_while(|ch| ch.is_digit(10));
                     Ok(Value::Float(OrderedFloat(
                         self.str[start..end].parse().unwrap(),
@@ -165,7 +165,8 @@ impl<'a> Parser<'a> {
                                     if let Some(value) = iter.next() {
                                         map.insert(key, value);
                                     } else {
-                                        let end = self.chars
+                                        let end = self
+                                            .chars
                                             .clone()
                                             .next()
                                             .map(|(pos, _)| pos)
@@ -300,8 +301,8 @@ impl<'a> Parser<'a> {
 
 fn is_symbol_head(ch: char) -> bool {
     match ch {
-        'a'...'z'
-        | 'A'...'Z'
+        'a'..='z'
+        | 'A'..='Z'
         | '.'
         | '*'
         | '+'
@@ -320,8 +321,9 @@ fn is_symbol_head(ch: char) -> bool {
 }
 
 fn is_symbol_tail(ch: char) -> bool {
-    is_symbol_head(ch) || match ch {
-        '0'...'9' | ':' | '#' | '/' => true,
-        _ => false,
-    }
+    is_symbol_head(ch)
+        || match ch {
+            '0'..='9' | ':' | '#' | '/' => true,
+            _ => false,
+        }
 }
