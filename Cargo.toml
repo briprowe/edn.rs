@@ -11,3 +11,6 @@ categories = ["parser-implementations"]
 
 [dependencies]
 ordered-float = "1.0.2"
+
+[dev-dependencies]
+maplit = "1.0.2"
