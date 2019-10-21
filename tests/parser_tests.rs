@@ -1,6 +1,4 @@
 extern crate edn;
-#[macro_use]
-extern crate maplit;
 extern crate num_bigint;
 extern crate ordered_float;
 
@@ -551,34 +549,4 @@ fn test_comments() {
     assert_eq!(parser.read(), Some(Ok(Value::Vector(Vec::new()))));
     assert_eq!(parser.read(), Some(Ok(Value::Map(BTreeMap::new()))));
     assert_eq!(parser.read(), None);
-}
-
-#[test]
-fn test_floats_positive_exponent() {
-    use ordered_float::OrderedFloat;
-
-    let expected_value = Value::Map(btreemap! {
-        Value::Keyword("amount".into()) => Value::Float(OrderedFloat(177429000.0)),
-    });
-
-    match Parser::new("{:amount 1.77429E8}").read() {
-        Some(Ok(value)) => assert_eq!(value, expected_value),
-        Some(Err(e)) => panic!("Invalid parse: {:?}", e),
-        None => panic!("Empty parse."),
-    };
-}
-
-#[test]
-fn test_floats_negative_exponent() {
-    use ordered_float::OrderedFloat;
-
-    let expected_value = Value::Map(btreemap! {
-        Value::Keyword("amount".into()) => Value::Float(OrderedFloat(0.0000000177429)),
-    });
-
-    match Parser::new("{:amount 1.77429E-8}").read() {
-        Some(Ok(value)) => assert_eq!(value, expected_value),
-        Some(Err(e)) => panic!("Invalid parse: {:?}", e),
-        None => panic!("Empty parse."),
-    };
 }
