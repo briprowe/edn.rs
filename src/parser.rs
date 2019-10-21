@@ -1,8 +1,9 @@
 use std::collections::BTreeMap;
 use std::str::CharIndices;
+use std::str::FromStr;
 
+use num_bigint::BigInt;
 use ordered_float::OrderedFloat;
-
 use Value;
 
 pub struct Parser<'a> {
@@ -39,6 +40,16 @@ impl<'a> Parser<'a> {
                     Ok(Value::Float(OrderedFloat(
                         self.str[start..end].parse().unwrap(),
                     )))
+                } else if p == Some('N') || p == Some('n') {
+                    self.chars.next();
+                    match BigInt::from_str(&self.str[start..end]) {
+                        Ok(big) => Ok(Value::BigInt(big)),
+                        Err(e) => Err(Error {
+                            lo: start,
+                            hi: end,
+                            message: format!("{}", e),
+                        }),
+                    }
                 } else {
                     Ok(Value::Integer(self.str[start..end].parse().unwrap()))
                 }

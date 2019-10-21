@@ -1,6 +1,7 @@
 extern crate edn;
 #[macro_use]
 extern crate maplit;
+extern crate num_bigint;
 extern crate ordered_float;
 
 use edn::parser::{Error, Parser};
@@ -53,6 +54,15 @@ fn test_read_floats() {
         parser.read(),
         Some(Ok(Value::Float(OrderedFloat(0.0000000177429))))
     );
+    assert_eq!(parser.read(), None);
+}
+
+#[test]
+fn test_read_bigint() {
+    use num_bigint::BigInt;
+
+    let mut parser = Parser::new("13N");
+    assert_eq!(parser.read(), Some(Ok(Value::BigInt(BigInt::from(13)))));
     assert_eq!(parser.read(), None);
 }
 

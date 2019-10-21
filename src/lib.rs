@@ -1,7 +1,9 @@
+extern crate num_bigint;
 extern crate ordered_float;
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use num_bigint::BigInt;
 use ordered_float::OrderedFloat;
 
 pub mod parser;
@@ -15,6 +17,7 @@ pub enum Value {
     Symbol(String),
     Keyword(String),
     Integer(i64),
+    BigInt(BigInt),
     Float(OrderedFloat<f64>),
     List(Vec<Value>),
     Vector(Vec<Value>),
